@@ -32,3 +32,8 @@
       supervisord_program_name: supervisord-program-test-6
       supervisord_program_command: echo test 6
       supervisord_program_redirect_stderr: true
+    - role: '{{playbook_dir}}'
+      supervisord_program_name: supervisord-program-test-7
+      supervisord_program_command: echo test 7
+      supervisord_program_redirect_stderr: true
+      supervisord_program_kill_event: true

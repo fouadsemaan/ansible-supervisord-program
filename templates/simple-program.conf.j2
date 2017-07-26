@@ -8,6 +8,7 @@ user={{supervisord_program_username | default('root')}}
 command={{supervisord_program_command}}
 autorestart={{supervisord_program_autorestart|default(true)}}
 stopasgroup={{supervisord_stopasgroup|default(true)|to_json}}
+pidfile={{supervisord_program_pidfile | default('/var/run/supervisord.pid')}}
 
 {% if supervisord_program_redirect_stderr is defined %}
 redirect_stderr={{supervisord_program_redirect_stderr}}
@@ -32,3 +33,10 @@ stderr_logfile_maxbytes={{ supervisord_program_stderr_logfile_maxbytes }}
 {% for k,v in supervisord_program_addl_settings.iteritems() %}
 {{k}}={{v}}
 {% endfor %}
+
+{% if supervisord_program_kill_event %}
+[eventlistener:{{supervisord_program_name}}_exit]
+command=/usr/local/bin/kill-supervisor.py SIGQUIT
+process_name=killsupervisor
+events=PROCESS_STATE_EXITED
+{% endif %}

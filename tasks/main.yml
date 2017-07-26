@@ -10,7 +10,17 @@
 - name: install program definition
   become: yes
   become_user: root
-  template: >-
-    src=simple-program.conf.j2
-    dest={{supervisord_conf_dir}}/{{supervisord_program_name}}.conf
-    mode=0644
+  with_items:
+    - d: '{{supervisord_conf_dir}}'
+      f: simple-program.conf
+      m: '0644'
+      i: true
+    - d: /usr/local/bin
+      f: kill-supervisor.py
+      m: '0755'
+      i: '{{supervisord_program_kill_event}}'
+  when: item.i
+  template:
+    src : '{{item.f}}.j2' 
+    dest : '{{item.d}}/{{item.f}}' 
+    mode: '{{item.m}}' 
